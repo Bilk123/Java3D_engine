@@ -33,7 +33,7 @@ public class Quaternion4f {
     public Quaternion4f mul(Quaternion4f q) {
         /*(Wa*Wb - Vb*Va, Wb * Va + Wa * Vb + Va x Vb)*/
         Quaternion4f q1 = new Quaternion4f();
-        q1.w = w*q.w-v.dot(q.v);
+        q1.w = w * q.w - v.dot(q.v);
         q1.v = ((v.mul(q.w)).add(q.v.mul(w))).add(v.cross(q.v));
         return q1;
     }
@@ -46,14 +46,14 @@ public class Quaternion4f {
         return (V.add((vcV.mul(2 * w)))).add(((v.cross(vcV)).mul(2)));
     }
 
-    public Quaternion4f add(Quaternion4f q) {
-        return this;
-    }
-
     public Matrix4f toMatrix4F() {
-        return new Matrix4f();
+        return new Matrix4f(new float[][]{
+                {1 - 2 * v.z * v.z - 2 * v.y * v.y, -2 * v.z * w + 2 * v.y * v.x, 2 * v.y * w + 2 * v.z * v.x, 0},
+                {2 * v.x * v.y + 2 * w * v.z, 1 - 2 * v.z * v.z - 2 * v.x * v.x, 2 * v.z * v.y - 2 * v.x * w, 0},
+                {2 * v.x * v.z - 2 * w * v.y, 2 * v.y * v.z + 2 * w * v.x, 1 - 2 * v.y * v.y - 2 * v.x * v.x, 0},
+                {0, 0, 0, 1}}
+        );
     }
-
 
     public Quaternion4f inverse() {
         Quaternion4f q = new Quaternion4f();

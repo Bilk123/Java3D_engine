@@ -28,4 +28,14 @@ public class Matrix extends RectangularMatrix{
         }
         return null;
     }
+
+    public Vector3f mul(Vector3f vec){
+        try {
+            return RectangularMatrix.multiply(vec,this);
+        } catch (MatrixMismatchException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
 }

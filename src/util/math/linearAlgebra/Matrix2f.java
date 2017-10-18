@@ -3,13 +3,10 @@ package util.math.linearAlgebra;
 import util.exceptions.MatrixMismatchException;
 
 public class Matrix2f extends SquareMatrix {
-
-    static {
-        size = 2;
-    }
+    public static final Matrix2f IDENTITY2 = new Matrix2f();
 
     public Matrix2f() {
-        super();
+        super(2);
     }
 
     public Matrix2f(float[][] mat) {

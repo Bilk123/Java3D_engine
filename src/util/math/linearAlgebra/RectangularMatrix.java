@@ -12,8 +12,8 @@ public abstract class RectangularMatrix {
 
     public RectangularMatrix(int columns, int rows) {
         mat = initZero(columns, rows);
-        this.columns =columns;
-        this.rows=rows;
+        this.columns = columns;
+        this.rows = rows;
     }
 
     public RectangularMatrix(float[][] mat) {
@@ -36,7 +36,7 @@ public abstract class RectangularMatrix {
     }
 
     public static float[][] add(RectangularMatrix a, RectangularMatrix b) throws MatrixMismatchException {
-        if(a.columns != b.columns && a.rows != b.rows){
+        if (a.columns != b.columns && a.rows != b.rows) {
             throw new MatrixMismatchException(MatrixMismatchException.Function.addition);
         }
         float[][] newMat = new float[a.columns][a.rows];
@@ -47,6 +47,8 @@ public abstract class RectangularMatrix {
         }
         return newMat;
     }
+
+
 
     public static float[][] multiply(RectangularMatrix a, RectangularMatrix b) throws MatrixMismatchException {
         if (a.columns != b.rows)
@@ -65,15 +67,10 @@ public abstract class RectangularMatrix {
         return matrix;
     }
 
-    public void setElement(int x, int y, float val) {
-        if (!(x >= 0 && x < columns && y >= 0 && y < rows))
-            System.out.println("element out of bounds");
-        else
-            mat[x][y] = val;
-    }
+    public static Vector3f multiply( Vector3f v, RectangularMatrix m) throws MatrixMismatchException {
+       if(!(m.rows == 1 && m.columns ==3)) throw new MatrixMismatchException(MatrixMismatchException.Function.multiplication);
 
-    public void setMat(float[][] mat) {
-        this.mat = mat;
+       return new Vector3f(v.x*m.mat[0][0],v.y*m.mat[0][1],v.z*m.mat[0][2]);
     }
 
     public static String writeMatrix(float[][] mat) {
@@ -84,16 +81,32 @@ public abstract class RectangularMatrix {
         return string;
     }
 
-    @Override
-    public String toString() {
-        return writeMatrix(mat);
-    }
-
     public int getColumns() {
         return columns;
     }
 
     public int getRows() {
         return rows;
+    }
+
+    @Override
+    public String toString() {
+        return writeMatrix(mat);
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        RectangularMatrix a;
+        if (obj instanceof RectangularMatrix) {
+            a = (RectangularMatrix) obj;
+        } else return false;
+
+        if (rows == a.rows && columns == a.columns) {
+            for (int i = 0; i < rows; i++)
+                for (int j = 0; j < columns; j++) {
+                    if (mat[i][j] != a.mat[i][j]) return false;
+                }
+        } else return false;
+        return true;
     }
 }

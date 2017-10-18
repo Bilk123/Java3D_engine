@@ -2,12 +2,10 @@ package util.math.linearAlgebra;
 
 import util.exceptions.MatrixNotSquareException;
 
-@SuppressWarnings({"AccessStaticViaInstance", "WeakerAccess"})
+@SuppressWarnings({"WeakerAccess"})
 public abstract class SquareMatrix extends RectangularMatrix {
 
-    protected static int size;
-
-    protected SquareMatrix() {
+    protected SquareMatrix(int size) {
         super(size,size);
         mat = initIdentity(size);
     }
@@ -31,7 +29,7 @@ public abstract class SquareMatrix extends RectangularMatrix {
     }
 
     protected static float[][] transpose(SquareMatrix a) {
-        int n = a.getSize();
+        int n = a.getRows();
         float[][] newMatrix = new float[n][n];
         for (int x = 0; x < n; x++) {
             for (int y = 0; y < n; y++) {
@@ -80,7 +78,4 @@ public abstract class SquareMatrix extends RectangularMatrix {
         return inverse;
     }
 
-    protected int getSize() {
-        return size;
-    }
 }

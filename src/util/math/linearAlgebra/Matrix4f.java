@@ -4,12 +4,10 @@ import util.exceptions.MatrixMismatchException;
 
 public class Matrix4f extends SquareMatrix {
 
-    static {
-        size = 4;
-    }
+    public static final Matrix4f IDENTITY4 = new Matrix4f();
 
     public Matrix4f() {
-        super();
+        super(4);
     }
 
     public Matrix4f(float[][] mat) {
@@ -43,6 +41,16 @@ public class Matrix4f extends SquareMatrix {
         return new Vector3f(a / w, b / w, c / w);
     }
 
+    public Vector3f clipMul(Vector3f vec) {
+        float a, b, c, w, z;
+        z = vec.z < 0 ? 0 : vec.z;
+        a = vec.x * mat[0][0] + vec.y * mat[0][1] + z * mat[0][2] + mat[0][3];
+        b = vec.x * mat[1][0] + vec.y * mat[1][1] + z * mat[1][2] + mat[1][3];
+        c = vec.x * mat[2][0] + vec.y * mat[2][1] + z * mat[2][2] + mat[2][3];
+        w = vec.x * mat[3][0] + vec.y * mat[3][1] + z * mat[3][2] + mat[3][3];
+        return new Vector3f(a / w, b / w, c / w);
+    }
+
     public Matrix4f transpose() {
         return new Matrix4f(SquareMatrix.transpose(this));
     }
@@ -65,27 +73,14 @@ public class Matrix4f extends SquareMatrix {
         float ar = width / height;
         float r = t * (ar);
         float l = -t * (ar);
-        return new Matrix4f(new float[][]{
-                {2 * n / (r - l), 0, 0, 0},
-                {0, -2 * n / (t - b), 0, 0},
-                {(r + l) / (r - l), (t + b) / (t - b), -(f + n) / (f - n), -1},
-                {0, 0, -2 * f * n / (f - n), 0}
-        });
+        return new Matrix4f(new float[][]
+                {
+                        {2 * n / (r - l), 0, 0, 0},
+                        {0, -2 * n / (t - b), 0, 0},
+                        {(r + l) / (r - l), (t + b) / (t - b), -(f + n) / (f - n), -1},
+                        {0, 0, -2 * f * n / (f - n), 0}
+                });
     }
-
-
-/*
-    public static Matrix4f initProjectionMatrix(float f, float n, float fov) {
-        float s = (float) (1 / Math.tan(Math.toRadians(fov / 2)));
-        float a = ((n + f) / (n - f));
-        float b = (2 * n * f) / (n - f);
-        return new Matrix4f(new float[][]{
-                {s, 0, 0, 0},
-                {0, s, 0, 0},
-                {0, 0, a, b},
-                {0, 0, -1, 0}
-        });
-    }*/
 
     public static Matrix4f initTranslationMatrix(Vector3f translation) {
         return new Matrix4f(new float[][]
@@ -93,7 +88,8 @@ public class Matrix4f extends SquareMatrix {
                         {1, 0, 0, translation.x},
                         {0, 1, 0, translation.y},
                         {0, 0, 1, translation.z},
-                        {0, 0, 0, 1}});
+                        {0, 0, 0, 1}
+                });
     }
 
     public static Matrix4f initScaleMatrix(Vector3f scaleVector) {
@@ -113,6 +109,6 @@ public class Matrix4f extends SquareMatrix {
         Matrix4f S = initScaleMatrix(scale);
         Matrix4f R = initRotationMatrix(rotation);
         Matrix4f T = initTranslationMatrix(translation);
-        return T.mul(S);
+        return T.mul(S).mul(R);
     }
 }

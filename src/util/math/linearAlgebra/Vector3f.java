@@ -86,4 +86,8 @@ public class Vector3f {
     public Vector3f cpy() {
         return new Vector3f(x,y,z);
     }
+
+    public Vector3f mul(Vector3f vec){
+        return new Vector3f(x*vec.x,y*vec.y,z*vec.z);
+    }
 }

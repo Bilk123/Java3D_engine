@@ -4,12 +4,10 @@ import util.exceptions.MatrixMismatchException;
 
 public class Matrix3f extends SquareMatrix {
 
-    static {
-        size = 3;
-    }
+    public static final Matrix3f IDENTITY3 = new Matrix3f();
 
     public Matrix3f() {
-        super();
+        super(3);
     }
 
     public Matrix3f(float[][] mat) {

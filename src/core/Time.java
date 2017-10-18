@@ -1,7 +1,7 @@
 package core;
 
 /**
- * Created by Blake on 3/5/2017.
+ * Created by Blake on 14/09/2017.
  */
 public class Time {
     public static final int SECOND = 1000000000;

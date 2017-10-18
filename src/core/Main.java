@@ -3,6 +3,7 @@ package core;
 import graphics.Renderer;
 import input.Keyboard;
 import input.Mouse;
+import util.math.linearAlgebra.Matrix;
 import util.math.linearAlgebra.Matrix4f;
 import util.math.linearAlgebra.Vector3f;
 
