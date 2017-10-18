@@ -12,7 +12,7 @@ public class Keyboard implements KeyListener {
     public static final int KEYS = 256;
 
     private boolean[] keys = new boolean[KEYS];
-    public boolean up, down, left, right, space, c;
+    public boolean up, down, left, right, space, c,e,q;
 
     public void update() {
         up = keys[VK_UP] || keys[VK_W];
@@ -21,6 +21,8 @@ public class Keyboard implements KeyListener {
         left = keys[VK_LEFT] || keys[VK_A];
         space = keys[VK_SPACE];
         c = keys[VK_C];
+        e=keys[VK_E];
+        q = keys[VK_Q];
     }
 
     @Override

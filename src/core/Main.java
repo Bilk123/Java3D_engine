@@ -3,8 +3,7 @@ package core;
 import graphics.Renderer;
 import input.Keyboard;
 import input.Mouse;
-import util.math.linearAlgebra.Matrix;
-import util.math.linearAlgebra.Matrix4f;
+import util.math.geom.Face3;
 import util.math.linearAlgebra.Vector3f;
 
 import javax.swing.*;
@@ -16,7 +15,7 @@ import java.awt.image.DataBufferInt;
 public class Main extends Canvas implements Runnable {
     public static final int WIDTH = 600;
     public static final int HEIGHT = (int) (WIDTH * 9.0 / 16.0);
-    public static final int SCALE = 2;
+    public static final float SCALE = 2.0f;
     public static final String TITLE = "3D Engine";
     public static Graphics2D g2d;
 
@@ -34,7 +33,7 @@ public class Main extends Canvas implements Runnable {
     }
 
     private void init() {
-        Dimension size = new Dimension(SCALE * WIDTH, SCALE * HEIGHT);
+        Dimension size = new Dimension((int) (SCALE * WIDTH), (int) (SCALE * HEIGHT));
         setPreferredSize(size);
         key = new Keyboard();
         mouse = new Mouse();
@@ -139,5 +138,7 @@ public class Main extends Canvas implements Runnable {
     public static void main(String[] args) {
         new Main().start();
     }
+
+
 }
 

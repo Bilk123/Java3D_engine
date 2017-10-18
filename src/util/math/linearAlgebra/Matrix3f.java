@@ -48,13 +48,7 @@ public class Matrix3f extends SquareMatrix {
 
     }
 
-    public static Matrix3f initScreenFitMatrix(float sx, float sy, float tx, float ty) {
-        return new Matrix3f(new float[][]{
-                {sx, 0, tx},
-                {0, sy, ty},
-                {0, 0, 1}
-        });
-    }
+
 
     public Vector2f mul(Vector2f v) {
         float x = mat[0][0] * v.x + mat[0][1] * v.y + mat[0][2];

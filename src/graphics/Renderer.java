@@ -9,19 +9,17 @@ import java.util.ArrayList;
 import java.util.Random;
 
 public class Renderer {
+    public static final int MAX_VERTICES = 100000;
     public static int clearColor = 0x0;
     private int width, height;
     public int[] pixels;
     public float[] zBuffer;
     private Camera cam;
-    private Matrix3f fitToScreenMatrix;
+
     public Vector3f[] vertices;
     private int[] indices;
     private ArrayList<Face3> faces;
 
-    public int nVertices = 0;
-
-    public static final int MAX_VERTICES = 100000;
 
     public Renderer(int width, int height) {
         this.width = width;
@@ -32,8 +30,24 @@ public class Renderer {
         pixels = new int[width * height];
         zBuffer = new float[width * height];
         clear();
-        cam = new Camera(new Vector3f(0, 0, 0), new Vector3f(1,1,1), new Quaternion4f(new Vector3f(0, 1, 0), 45));
-        fitToScreenMatrix = Matrix3f.initScreenFitMatrix(Main.WIDTH / 2, Main.HEIGHT / 2, Main.WIDTH / 2, Main.HEIGHT / 2);
+        cam = new Camera(new Vector3f(0, 0, 0), new Vector3f(1, 1, 1), new Quaternion4f(new Vector3f(0, 1, 0), 0));
+        vertices[0] = cam.getProjection().mul(cam.getTransform().mul(new Vector3f(1, 0, 4)));
+        vertices[1] = cam.getProjection().mul(cam.getTransform().mul(new Vector3f(0, 1, 4)));
+        vertices[2] = cam.getProjection().mul(cam.getTransform().mul(new Vector3f(-1, 0, 4)));
+        f = new Face3(vertices[0], vertices[1], vertices[2]);
+        f.setColor(0xff0000);
+        vertices[3] = cam.getProjection().mul(cam.getTransform().mul(new Vector3f(2, 0, 5)));
+        vertices[4] = cam.getProjection().mul(cam.getTransform().mul(new Vector3f(0, 2, 5)));
+        vertices[5] = cam.getProjection().mul(cam.getTransform().mul(new Vector3f(-2, 0, 5)));
+        f1 = new Face3(vertices[3], vertices[4], vertices[5]);
+        f1.setColor(0xff);
+
+
+        for(int x=0;x<10;x++)
+            for(int y=0;y<10;y++)
+                for(int z=0;z<10;z++){
+                    vertices[6+x+y*10+z*100] = cam.getProjection().mul(cam.getTransform().mul(new Vector3f(x-5,y-5,z-5)));
+                }
     }
 
 
@@ -45,7 +59,6 @@ public class Renderer {
     }
 
     public void setPixel(int x, int y, int color, float depth) {
-
         if ((x) >= 0 && (x) < width && (y) >= 0 && (y) < height)
             if (getPixelDepth(x, y) > depth) {
                 pixels[(x) + (y) * width] = color;
@@ -54,8 +67,7 @@ public class Renderer {
     }
 
     public void setPixel(Vector3f vec, int color) {
-        Vector2f screen = fitToScreenMatrix.mul(new Vector2f(vec.x, vec.y));
-        setPixel((int) screen.x, (int) screen.y, color, vec.z);
+        setPixel((int) vec.x, (int) vec.y, color, vec.z);
     }
 
     public void setPixelDepth(int x, int y, float depth) {
@@ -74,33 +86,44 @@ public class Renderer {
         Vector3f c = vec2.sub(vec1);
         float len = c.len();
         c.normalise();
-        float step = 1 / 300f;
-        for (float i = 0; i < len; i += step) {
-            setPixel(c.mul(i).add(vec1), 0xffffff);
+        for (int i = 0; i < len; i++) {
+            setPixel(c.mul(i).add(vec1), 0xff0000);
         }
     }
 
-    public void fillFace() {
+    Face3 f, f1;
 
-    }
-    float a =0;
     public void update() {
         cam.update();
-        Random rnd = new Random();
-        rnd.setSeed(100);
-        for(int i  =0;i<MAX_VERTICES;i++){
-            vertices[i] = cam.getProjection().clipMul(cam.getTransform().mul(new Vector3f(rnd.nextInt(40)-20, rnd.nextInt(40)-20, rnd.nextInt(40)-20)));
-        }
-        cam.setRotation(new Quaternion4f(new Vector3f(0,1,0),a).mul(new Quaternion4f(new Vector3f(1,0,0),a)).mul(new Quaternion4f(new Vector3f(0,0,1),a)));
-        a++;
+        vertices[0] = cam.getProjection().mul(cam.getTransform().mul(new Vector3f(3, 0, 2)));
+        vertices[1] = cam.getProjection().mul(cam.getTransform().mul(new Vector3f(2, 1, 2)));
+        vertices[2] = cam.getProjection().mul(cam.getTransform().mul(new Vector3f(1, 0, 2)));
+        f = new Face3(vertices[0], vertices[1], vertices[2]);
+        f.setColor(0xff0000);
+        vertices[3] = cam.getProjection().mul(cam.getTransform().mul(new Vector3f(2, 0, 1)));
+        vertices[4] = cam.getProjection().mul(cam.getTransform().mul(new Vector3f(0, 2, 2)));
+        vertices[5] = cam.getProjection().mul(cam.getTransform().mul(new Vector3f(-2, 0, 3)));
+        System.out.println(vertices[2]+" : "+vertices[5]);
+        f1 = new Face3(vertices[3], vertices[4], vertices[5]);
+        f1.setColor(0xff);
+
+        for(int x=0;x<10;x++)
+            for(int y=0;y<10;y++)
+                for(int z=0;z<10;z++){
+                    vertices[6+x+y*10+z*100] = cam.getProjection().mul(cam.getTransform().mul(new Vector3f(x-5,y-5,z)));
+                }
 
     }
 
     public void render() {
-        for (int i = 0; i < MAX_VERTICES; i++) {
-            if (vertices[i] != null)
-                setPixel(vertices[i], 0xffffff);
-        }
+        drawTriangle(f1);
+        drawTriangle(f);
+
+        for(int x=0;x<10;x++)
+            for(int y=0;y<10;y++)
+                for(int z=0;z<10;z++){
+                    setPixel(vertices[6+x+y*10+z*100],0xffffff);
+                }
     }
 
     public void addFace(Face3 f) {
@@ -120,18 +143,64 @@ public class Renderer {
         return height;
     }
 
-    private void fillBottomFlatTriangle(Vector3f v1, Vector3f v2, Vector3f v3) {
-        float invslope1 = (v2.x - v1.x) / (v2.y - v1.y);
-        float invslope2 = (v3.x - v1.x) / (v3.y - v1.y);
+    //v1.y <v2.y &&v1.y<v3.y
+    private void fillBottomFlatTriangle(Vector3f v1, Vector3f v2, Vector3f v3, int color) {
 
-        float curx1 = v1.x;
-        float curx2 = v1.x;
+        for (int scanLine = (int) v1.y; scanLine < v2.y; scanLine++) {
+            float l = (scanLine - v1.y) / (v2.y - v1.y);
+            if (l < 0) continue;
+            float r1x = (v1.x + (v2.x - v1.x) * l);
+            float r2x = (v1.x + (v3.x - v1.x) * l);
+            float r1z = (v1.z + (v2.z - v1.z) * l);
+            float r2z = (v1.z + (v3.z - v1.z) * l);
+            float grad;
+            grad = (float) Math.tan(Math.atan2((r2z - r1z), (r2x - r1x)));
+            for (int x = (int) Math.min(r1x, r2x); x < (int) Math.max(r1x, r2x); x++) {
+                setPixel(x, scanLine, color, grad * x);
+            }
+        }
 
-        for (float scanlineY = v1.y; scanlineY <= v2.y; scanlineY++) {
-            //drawLine((int)curx1, scanlineY, (int)curx2, scanlineY);
-            curx1 += invslope1;
-            curx2 += invslope2;
+    }
+
+    private void fillTopFlatTriangle(Vector3f v1, Vector3f v2, Vector3f v3, int color) {
+        for (int scanLine = (int) v3.y; scanLine >= (int) (v1.y); scanLine--) {
+            float l = (scanLine - v1.y) / (v3.y - v1.y);
+            if (l < 0) continue;
+            int r1x = (int) (v1.x + (v3.x - v1.x) * l);
+            int r2x = (int) (v2.x + (v3.x - v2.x) * l);
+            int r1z = (int) (v1.z + (v3.z - v1.z) * l);
+            int r2z = (int) (v2.z + (v3.z - v2.z) * l);
+            float grad;
+            grad = (float) Math.tan(Math.atan2((r2z - r1z), (r2x - r1x)));
+            for (int x = Math.min(r1x, r2x); x < Math.max(r1x, r2x); x++) {
+                setPixel(x, scanLine, color, x * grad);
+            }
         }
     }
+
+    public void drawTriangle(Face3 f) {
+        Vector3f v1, v2, v3;
+        v1 = f.getP1();
+        v2 = f.getP2();
+        v3 = f.getP3();
+
+
+        if ((int) v2.y == (int) v3.y) {
+            fillBottomFlatTriangle(v1, v2, v3, f.getColor());
+        } else if ((int) v1.y == (int) v2.y) {
+            fillTopFlatTriangle(v1, v2, v3, f.getColor());
+        } else {
+            float l = (v2.y - v1.y) / (v3.y - v1.y);
+            float x = (v1.x) + l * (v3.x - v1.x);
+            float z = (v1.z) + l * (v3.z - v1.z);
+            Vector3f v4 = new Vector3f(x, v2.y, z);
+            fillBottomFlatTriangle(v1, v2, v4, f.getColor());
+            fillTopFlatTriangle(v2, v4, v3, f.getColor());
+
+        }
+
+
+    }
+
 
 }

@@ -109,6 +109,15 @@ public class Matrix4f extends SquareMatrix {
         Matrix4f S = initScaleMatrix(scale);
         Matrix4f R = initRotationMatrix(rotation);
         Matrix4f T = initTranslationMatrix(translation);
-        return T.mul(S).mul(R);
+        return S.mul(R).mul(T);
+    }
+
+    public static Matrix4f initScreenFitMatrix(float sx, float sy, float tx, float ty) {
+        return new Matrix4f(new float[][]{
+                {sx, 0, tx, 0},
+                {0, sy, ty, 0},
+                {0, 0, 1, 0},
+                {0, 0, 0, 1}
+        });
     }
 }
