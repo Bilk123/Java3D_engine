@@ -12,17 +12,21 @@ public class Keyboard implements KeyListener {
     public static final int KEYS = 256;
 
     private boolean[] keys = new boolean[KEYS];
-    public boolean up, down, left, right, space, c,e,q;
+    public boolean up, down, left, right, space, c,e,q,w,s,a,d;
 
     public void update() {
-        up = keys[VK_UP] || keys[VK_W];
-        down = keys[VK_DOWN] || keys[VK_S];
-        right = keys[VK_RIGHT] || keys[VK_D];
-        left = keys[VK_LEFT] || keys[VK_A];
+        up = keys[VK_UP];
+        down = keys[VK_DOWN];
+        right = keys[VK_RIGHT];
+        left = keys[VK_LEFT];
         space = keys[VK_SPACE];
         c = keys[VK_C];
         e=keys[VK_E];
         q = keys[VK_Q];
+        w=keys[VK_W];
+        s = keys[VK_S];
+        a = keys[VK_A];
+        d = keys[VK_D];
     }
 
     @Override

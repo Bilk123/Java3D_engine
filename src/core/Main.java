@@ -1,9 +1,12 @@
 package core;
 
+import graphics.Camera;
 import graphics.Renderer;
 import input.Keyboard;
 import input.Mouse;
 import util.math.geom.Face3;
+import util.math.linearAlgebra.Quaternion4f;
+import util.math.linearAlgebra.Vector2f;
 import util.math.linearAlgebra.Vector3f;
 
 import javax.swing.*;
@@ -30,6 +33,20 @@ public class Main extends Canvas implements Runnable {
 
     public Main() {
         init();
+        Face3 f = new Face3(new Vector3f(1, 2, 3), new Vector3f(3, 1, 2), new Vector3f(2, 3, 1));
+        Vector3f v1 = f.getP1();
+        Vector3f v2 = f.getP2();
+        Vector3f v3 = f.getP3();
+        float l = (v2.y - v1.y) / (v3.y - v1.y);
+        float x = (v1.x) + l * (v3.x - v1.x);;
+        float z = (v1.z) + l * (v3.z - v1.z);
+        Vector3f v4 = new Vector3f(x, v2.y, z);
+
+        System.out.println(v1);
+        System.out.println(v2);
+        System.out.println(v3);
+        System.out.println(v4);
+
     }
 
     private void init() {

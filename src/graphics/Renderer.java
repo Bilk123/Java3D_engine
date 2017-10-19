@@ -30,26 +30,46 @@ public class Renderer {
         pixels = new int[width * height];
         zBuffer = new float[width * height];
         clear();
-        cam = new Camera(new Vector3f(0, 0, 0), new Vector3f(1, 1, 1), new Quaternion4f(new Vector3f(0, 1, 0), 0));
-        vertices[0] = cam.getProjection().mul(cam.getTransform().mul(new Vector3f(1, 0, 4)));
-        vertices[1] = cam.getProjection().mul(cam.getTransform().mul(new Vector3f(0, 1, 4)));
-        vertices[2] = cam.getProjection().mul(cam.getTransform().mul(new Vector3f(-1, 0, 4)));
-        f = new Face3(vertices[0], vertices[1], vertices[2]);
-        f.setColor(0xff0000);
-        vertices[3] = cam.getProjection().mul(cam.getTransform().mul(new Vector3f(2, 0, 5)));
-        vertices[4] = cam.getProjection().mul(cam.getTransform().mul(new Vector3f(0, 2, 5)));
-        vertices[5] = cam.getProjection().mul(cam.getTransform().mul(new Vector3f(-2, 0, 5)));
-        f1 = new Face3(vertices[3], vertices[4], vertices[5]);
-        f1.setColor(0xff);
-
-
-        for(int x=0;x<10;x++)
-            for(int y=0;y<10;y++)
-                for(int z=0;z<10;z++){
-                    vertices[6+x+y*10+z*100] = cam.getProjection().mul(cam.getTransform().mul(new Vector3f(x-5,y-5,z-5)));
-                }
+        cam = new Camera(new Vector3f(0, 3, 10), new Vector3f(1, 1, 1), new Quaternion4f(new Vector3f(0, 1, 0), 0));
+        processPoints();
     }
 
+    private Face3 sz1, sz2, sx1, sx2, sy1, sy2;
+
+    public void processPoints() {
+        for (int x = 0; x < 10; x++)
+            for (int y = 0; y < 10; y++)
+                for (int z = 0; z < 10; z++) {
+                    vertices[6 + x + y * 10 + z * 100] = cam.getProjection().mul(cam.getTransform().mul(new Vector3f(x - 5, y - 5, z)));
+                }
+
+        vertices[0] = cam.getProjection().mul(cam.getTransform().mul(new Vector3f(-5, -5, 5)));
+        vertices[1] = cam.getProjection().mul(cam.getTransform().mul(new Vector3f(5, -5, 5)));
+        vertices[2] = cam.getProjection().mul(cam.getTransform().mul(new Vector3f(5, 5, 5)));
+        vertices[3] = cam.getProjection().mul(cam.getTransform().mul(new Vector3f(-5, 5, 5)));
+        sz1 = new Face3(vertices[0], vertices[1], vertices[2]);
+        sz2 = new Face3(vertices[2], vertices[3], vertices[0]);
+        sz1.setColor(0xff);
+        sz2.setColor(0xff);
+
+        vertices[4] = cam.getProjection().mul(cam.getTransform().mul(new Vector3f(0, -5, 0)));
+        vertices[5] = cam.getProjection().mul(cam.getTransform().mul(new Vector3f(0, -5, 10)));
+        vertices[6] = cam.getProjection().mul(cam.getTransform().mul(new Vector3f(0, 5, 10)));
+        vertices[7] = cam.getProjection().mul(cam.getTransform().mul(new Vector3f(0, 5, 0)));
+        sx1 = new Face3(vertices[4], vertices[5], vertices[6]);
+        sx2 = new Face3(vertices[6], vertices[7], vertices[4]);
+        sx1.setColor(0xff00);
+        sx2.setColor(0xff00);
+
+        vertices[8] = cam.getProjection().mul(cam.getTransform().mul(new Vector3f(-5, 0, 0)));
+        vertices[9] = cam.getProjection().mul(cam.getTransform().mul(new Vector3f(-5, 0, 10)));
+        vertices[10] = cam.getProjection().mul(cam.getTransform().mul(new Vector3f(5, 0, 10)));
+        vertices[11] = cam.getProjection().mul(cam.getTransform().mul(new Vector3f(5, 0, 0)));
+        sy1 = new Face3(vertices[8], vertices[9], vertices[10]);
+        sy2 = new Face3(vertices[10], vertices[11], vertices[8]);
+        sy1.setColor(0xff0000);
+        sy2.setColor(0xff0000);
+    }
 
     public void clear() {
         for (int i = 0; i < width * height; i++) {
@@ -72,10 +92,8 @@ public class Renderer {
 
     public void setPixelDepth(int x, int y, float depth) {
         if (x >= 0 && x < width && y >= 0 && y < height)
-            if (depth > 0.0f && depth <= 1.0f)
-                zBuffer[x + y * width] = depth;
-            else
-                zBuffer[x + y * width] = 1.0f;
+            zBuffer[x + y * width] = depth;
+
     }
 
     public float getPixelDepth(int x, int y) {
@@ -95,35 +113,21 @@ public class Renderer {
 
     public void update() {
         cam.update();
-        vertices[0] = cam.getProjection().mul(cam.getTransform().mul(new Vector3f(3, 0, 2)));
-        vertices[1] = cam.getProjection().mul(cam.getTransform().mul(new Vector3f(2, 1, 2)));
-        vertices[2] = cam.getProjection().mul(cam.getTransform().mul(new Vector3f(1, 0, 2)));
-        f = new Face3(vertices[0], vertices[1], vertices[2]);
-        f.setColor(0xff0000);
-        vertices[3] = cam.getProjection().mul(cam.getTransform().mul(new Vector3f(2, 0, 1)));
-        vertices[4] = cam.getProjection().mul(cam.getTransform().mul(new Vector3f(0, 2, 2)));
-        vertices[5] = cam.getProjection().mul(cam.getTransform().mul(new Vector3f(-2, 0, 3)));
-        System.out.println(vertices[2]+" : "+vertices[5]);
-        f1 = new Face3(vertices[3], vertices[4], vertices[5]);
-        f1.setColor(0xff);
-
-        for(int x=0;x<10;x++)
-            for(int y=0;y<10;y++)
-                for(int z=0;z<10;z++){
-                    vertices[6+x+y*10+z*100] = cam.getProjection().mul(cam.getTransform().mul(new Vector3f(x-5,y-5,z)));
-                }
+        processPoints();
 
     }
 
     public void render() {
-        drawTriangle(f1);
-        drawTriangle(f);
-
-        for(int x=0;x<10;x++)
-            for(int y=0;y<10;y++)
-                for(int z=0;z<10;z++){
-                    setPixel(vertices[6+x+y*10+z*100],0xffffff);
-                }
+        drawTriangle(sz1);
+        drawTriangle(sz2);
+        drawTriangle(sx1);
+        drawTriangle(sx2);
+        drawTriangle(sy1);
+        drawTriangle(sy2);
+        for (int i = 0; i < MAX_VERTICES; i++) {
+            if (vertices[i] != null)
+                setPixel(vertices[i], 0xffffff);
+        }
     }
 
     public void addFace(Face3 f) {
@@ -149,14 +153,21 @@ public class Renderer {
         for (int scanLine = (int) v1.y; scanLine < v2.y; scanLine++) {
             float l = (scanLine - v1.y) / (v2.y - v1.y);
             if (l < 0) continue;
-            float r1x = (v1.x + (v2.x - v1.x) * l);
-            float r2x = (v1.x + (v3.x - v1.x) * l);
-            float r1z = (v1.z + (v2.z - v1.z) * l);
-            float r2z = (v1.z + (v3.z - v1.z) * l);
-            float grad;
-            grad = (float) Math.tan(Math.atan2((r2z - r1z), (r2x - r1x)));
-            for (int x = (int) Math.min(r1x, r2x); x < (int) Math.max(r1x, r2x); x++) {
-                setPixel(x, scanLine, color, grad * x);
+            int r1x = (int)(v1.x + (v2.x - v1.x) * l);
+            int r2x = (int)(v1.x + (v3.x - v1.x) * l);
+            int r1z = (int)(v1.z + (v2.z - v1.z) * l);
+            int r2z = (int)(v1.z + (v3.z - v1.z) * l);
+            if (r2x < r1x) {
+                int temp = r1x;
+                r1x = r2x;
+                r2x = temp;
+                temp = r1z;
+                r1z = r2z;
+                r2z = temp;
+            }
+            float m = (float)Math.tan(Math.atan2(r2z-r1z,r2x-r1x));
+            for (int x = r1x; x < r2x; x++) {
+                setPixel(x, scanLine, color, r1z+x*m);
             }
         }
 
@@ -170,10 +181,17 @@ public class Renderer {
             int r2x = (int) (v2.x + (v3.x - v2.x) * l);
             int r1z = (int) (v1.z + (v3.z - v1.z) * l);
             int r2z = (int) (v2.z + (v3.z - v2.z) * l);
-            float grad;
-            grad = (float) Math.tan(Math.atan2((r2z - r1z), (r2x - r1x)));
-            for (int x = Math.min(r1x, r2x); x < Math.max(r1x, r2x); x++) {
-                setPixel(x, scanLine, color, x * grad);
+            if (r2x < r1x) {
+                int temp = r1x;
+                r1x = r2x;
+                r2x = temp;
+                temp = r1z;
+                r1z = r2z;
+                r2z = temp;
+            }
+            float m = (float)Math.tan(Math.atan2(r2z-r1z,r2x-r1x));
+            for (int x = r1x; x < r2x; x++) {
+                setPixel(x, scanLine, color, r1z+m*x);
             }
         }
     }
@@ -194,6 +212,7 @@ public class Renderer {
             float x = (v1.x) + l * (v3.x - v1.x);
             float z = (v1.z) + l * (v3.z - v1.z);
             Vector3f v4 = new Vector3f(x, v2.y, z);
+            setPixel(v4, 0xffffff);
             fillBottomFlatTriangle(v1, v2, v4, f.getColor());
             fillTopFlatTriangle(v2, v4, v3, f.getColor());
 
