@@ -1,4 +1,4 @@
-package util.math.linearAlgebra;
+package core.math;
 
 import util.exceptions.MatrixMismatchException;
 
@@ -77,7 +77,7 @@ public class Matrix4f extends SquareMatrix {
                 {
                         {2 * n / (r - l), 0, 0, 0},
                         {0, -2 * n / (t - b), 0, 0},
-                        {(r + l) / (r - l), (t + b) / (t - b), -(f + n) / (f - n), -1},
+                        {(r + l) / (r - l), (t + b) / (t - b), -(f + n) / (f - n),-1},
                         {0, 0, -2 * f * n / (f - n), 0}
                 });
     }
@@ -93,12 +93,11 @@ public class Matrix4f extends SquareMatrix {
     }
 
     public static Matrix4f initScaleMatrix(Vector3f scaleVector) {
-        Matrix4f translationMatrix = new Matrix4f(new float[][]
+        return new Matrix4f(new float[][]
                 {{scaleVector.x, 0, 0, 0},
                         {0, scaleVector.y, 0, 0},
                         {0, 0, scaleVector.z, 0},
                         {0, 0, 0, 1}});
-        return translationMatrix;
     }
 
     public static Matrix4f initRotationMatrix(Quaternion4f rotation) {

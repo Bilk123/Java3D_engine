@@ -1,4 +1,4 @@
-package util.math.geom;
+package core.math.geom;
 
 public class Line2 {
 }

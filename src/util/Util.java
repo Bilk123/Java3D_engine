@@ -1,7 +1,5 @@
 package util;
 
-import util.math.linearAlgebra.Vector3f;
-
 public class Util {
     private Util() {
     }

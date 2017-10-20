@@ -1,24 +1,25 @@
-package graphics;
+package core.graphics;
 
 import core.Main;
-import util.math.linearAlgebra.*;
+import core.math.Matrix4f;
+import core.math.Quaternion4f;
+import core.math.Vector3f;
 
 public class Camera {
     private Matrix4f projection;
     private Matrix4f transform;
 
-    private static final Matrix scaleFix = new Matrix(new float[][]{{10, 10, 10f}});
     private Vector3f translation, scale;
     private Quaternion4f rotation;
 
-    private float pitch=0, yaw=0;
+    private float pitch = 0, yaw = 0;
 
     public Camera(Vector3f translation, Vector3f scale, Quaternion4f rotation) {
         projection = Matrix4f.initProjectionMatrix(100, 1, Main.WIDTH, Main.HEIGHT, 60);
         transform = Matrix4f.initTransformMatrix(translation, scale, rotation);
+        this.scale = scale;
         this.translation = translation;
         this.rotation = rotation;
-        this.scale = scaleFix.mul(scale);
         Matrix4f fitToScreenMatrix = Matrix4f.initScreenFitMatrix(Main.WIDTH, Main.HEIGHT, Main.WIDTH, Main.HEIGHT);
         projection = fitToScreenMatrix.mul(projection);
     }
@@ -28,39 +29,40 @@ public class Camera {
     }
 
     public void update() {
-        Vector3f sc = (scaleFix.mul(new Vector3f(1f, 1f, 1f).mul(0.01f)));
+        Vector3f fw = rotation.inverse().mul(new Vector3f(0,0,-1)).mul(0.1f);
+        Vector3f up = rotation.inverse().mul(new Vector3f(0,1,0)).mul(0.1f);
+        Vector3f side = rotation.inverse().mul(new Vector3f(1,0,0)).mul(0.1f);
         if (Main.getKey().w) {
-            translation = translation.add(new Vector3f(0, 0, -sc.z));
+            translation = translation.add(fw);
         }
         if (Main.getKey().s) {
-            translation = translation.add(new Vector3f(0, 0, sc.z));
+            translation = translation.sub(fw);
         }
         if (Main.getKey().a) {
-            translation = translation.add(new Vector3f(-sc.x, 0, 0));
+            translation = translation.sub(side);
         }
         if (Main.getKey().d) {
-            translation = translation.add(new Vector3f(sc.x, 0, 0));
+            translation = translation.add(side);
         }
         if (Main.getKey().space) {
-            translation = translation.add(new Vector3f(0, sc.y, 0));
+            translation = translation.add(up);
         }
         if (Main.getKey().c) {
-            translation = translation.add(new Vector3f(0, -sc.y, 0));
+            translation = translation.sub(up);
         }
         if (Main.getKey().left) {
             yaw++;
         }
         if (Main.getKey().right) {
-           yaw--;
+            yaw--;
         }
         if (Main.getKey().up) {
             pitch++;
         }
-
         if (Main.getKey().down) {
-           pitch--;
+            pitch--;
         }
-        rotation = new Quaternion4f(new Vector3f(-1,0,0),pitch).mul(new Quaternion4f(new Vector3f(0,-1,0),yaw));
+        rotation = new Quaternion4f(new Vector3f(-1, 0, 0), pitch).mul(new Quaternion4f(new Vector3f(0, -1, 0), yaw));
 
         transform = Matrix4f.initTransformMatrix(translation, scale, rotation);
     }

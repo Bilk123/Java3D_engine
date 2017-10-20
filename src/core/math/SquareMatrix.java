@@ -1,4 +1,4 @@
-package util.math.linearAlgebra;
+package core.math;
 
 import util.exceptions.MatrixNotSquareException;
 

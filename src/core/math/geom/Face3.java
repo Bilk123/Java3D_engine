@@ -1,6 +1,6 @@
-package util.math.geom;
+package core.math.geom;
 
-import util.math.linearAlgebra.Vector3f;
+import core.math.Vector3f;
 
 public class Face3 {
     private Vector3f p1, p2, p3;

@@ -1,4 +1,4 @@
-package util.math.linearAlgebra;
+package core.math;
 
 public class Quaternion4f {
     private float w;

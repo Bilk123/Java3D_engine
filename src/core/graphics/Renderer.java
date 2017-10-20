@@ -1,12 +1,10 @@
-package graphics;
+package core.graphics;
 
-import core.Main;
-import util.Util;
-import util.math.geom.Face3;
-import util.math.linearAlgebra.*;
+import core.math.Quaternion4f;
+import core.math.Vector3f;
+import core.math.geom.Face3;
 
 import java.util.ArrayList;
-import java.util.Random;
 
 public class Renderer {
     public static final int MAX_VERTICES = 100000;
@@ -32,15 +30,16 @@ public class Renderer {
         clear();
         cam = new Camera(new Vector3f(0, 3, 10), new Vector3f(1, 1, 1), new Quaternion4f(new Vector3f(0, 1, 0), 0));
         processPoints();
+
     }
 
     private Face3 sz1, sz2, sx1, sx2, sy1, sy2;
 
     public void processPoints() {
-        for (int x = 0; x < 10; x++)
-            for (int y = 0; y < 10; y++)
-                for (int z = 0; z < 10; z++) {
-                    vertices[6 + x + y * 10 + z * 100] = cam.getProjection().mul(cam.getTransform().mul(new Vector3f(x - 5, y - 5, z)));
+        for (int x = 0; x < 11; x++)
+            for (int y = 0; y < 11; y++)
+                for (int z = 0; z < 11; z++) {
+                    vertices[12 + x + y * 11 + z * 121] = cam.getProjection().mul(cam.getTransform().mul(new Vector3f(x - 5, y - 5, z)));
                 }
 
         vertices[0] = cam.getProjection().mul(cam.getTransform().mul(new Vector3f(-5, -5, 5)));
@@ -69,6 +68,8 @@ public class Renderer {
         sy2 = new Face3(vertices[10], vertices[11], vertices[8]);
         sy1.setColor(0xff0000);
         sy2.setColor(0xff0000);
+
+
     }
 
     public void clear() {
@@ -109,7 +110,6 @@ public class Renderer {
         }
     }
 
-    Face3 f, f1;
 
     public void update() {
         cam.update();
@@ -119,20 +119,30 @@ public class Renderer {
 
     public void render() {
         drawTriangle(sz1);
-        drawTriangle(sz2);
         drawTriangle(sx1);
+        drawTriangle(sz2);
         drawTriangle(sx2);
         drawTriangle(sy1);
         drawTriangle(sy2);
-        for (int i = 0; i < MAX_VERTICES; i++) {
+       /* for (int i = 0; i < MAX_VERTICES; i++) {
             if (vertices[i] != null)
                 setPixel(vertices[i], 0xffffff);
-        }
+        }*/
+     /* fillRectangle(100,100,0.8f,0xfffff);
+        fillRectangle(200,80,0.7f,0xff);    */
     }
 
     public void addFace(Face3 f) {
         faces.add(f);
 
+    }
+
+    public void fillRectangle(int w, int h, float z, int color) {
+        for (int i = 0; i < w; i++) {
+            for (int j = 0; j < h; j++) {
+                setPixel(i + 50, j + 50, color, z);
+            }
+        }
     }
 
     public static void setClearColor(int color) {
@@ -149,49 +159,48 @@ public class Renderer {
 
     //v1.y <v2.y &&v1.y<v3.y
     private void fillBottomFlatTriangle(Vector3f v1, Vector3f v2, Vector3f v3, int color) {
-
-        for (int scanLine = (int) v1.y; scanLine < v2.y; scanLine++) {
+        for (float scanLine = v1.y; scanLine < v2.y; scanLine++) {
             float l = (scanLine - v1.y) / (v2.y - v1.y);
             if (l < 0) continue;
-            int r1x = (int)(v1.x + (v2.x - v1.x) * l);
-            int r2x = (int)(v1.x + (v3.x - v1.x) * l);
-            int r1z = (int)(v1.z + (v2.z - v1.z) * l);
-            int r2z = (int)(v1.z + (v3.z - v1.z) * l);
+            float r1x = (v1.x + (v2.x - v1.x) * l);
+            float r2x = (v1.x + (v3.x - v1.x) * l);
+            float r1z = (v1.z + (v2.z - v1.z) * l);
+            float r2z = (v1.z + (v3.z - v1.z) * l);
             if (r2x < r1x) {
-                int temp = r1x;
+                float temp = r1x;
                 r1x = r2x;
                 r2x = temp;
                 temp = r1z;
                 r1z = r2z;
                 r2z = temp;
             }
-            float m = (float)Math.tan(Math.atan2(r2z-r1z,r2x-r1x));
-            for (int x = r1x; x < r2x; x++) {
-                setPixel(x, scanLine, color, r1z+x*m);
+            float m = (float) Math.tan(Math.atan2(r2z - r1z, r2x - r1x));
+            for (float x = r1x; x < r2x; x++) {
+                setPixel((int) x, (int) scanLine, color, r1z + x * m);
             }
         }
 
     }
 
     private void fillTopFlatTriangle(Vector3f v1, Vector3f v2, Vector3f v3, int color) {
-        for (int scanLine = (int) v3.y; scanLine >= (int) (v1.y); scanLine--) {
+        for (float scanLine = v3.y; scanLine >= (v1.y); scanLine--) {
             float l = (scanLine - v1.y) / (v3.y - v1.y);
             if (l < 0) continue;
-            int r1x = (int) (v1.x + (v3.x - v1.x) * l);
-            int r2x = (int) (v2.x + (v3.x - v2.x) * l);
-            int r1z = (int) (v1.z + (v3.z - v1.z) * l);
-            int r2z = (int) (v2.z + (v3.z - v2.z) * l);
+            float r1x = (v1.x + (v3.x - v1.x) * l);
+            float r2x = (v2.x + (v3.x - v2.x) * l);
+            float r1z = (v1.z + (v3.z - v1.z) * l);
+            float r2z = (v2.z + (v3.z - v2.z) * l);
             if (r2x < r1x) {
-                int temp = r1x;
+                float temp = r1x;
                 r1x = r2x;
                 r2x = temp;
                 temp = r1z;
                 r1z = r2z;
                 r2z = temp;
             }
-            float m = (float)Math.tan(Math.atan2(r2z-r1z,r2x-r1x));
-            for (int x = r1x; x < r2x; x++) {
-                setPixel(x, scanLine, color, r1z+m*x);
+            float m = (float) Math.tan(Math.atan2(r2z - r1z, r2x - r1x));
+            for (float x = r1x; x < r2x; x++) {
+                setPixel((int) x, (int) scanLine, color, r1z + m * x);
             }
         }
     }
@@ -201,7 +210,6 @@ public class Renderer {
         v1 = f.getP1();
         v2 = f.getP2();
         v3 = f.getP3();
-
 
         if ((int) v2.y == (int) v3.y) {
             fillBottomFlatTriangle(v1, v2, v3, f.getColor());
@@ -217,7 +225,9 @@ public class Renderer {
             fillTopFlatTriangle(v2, v4, v3, f.getColor());
 
         }
+    }
 
+    public void drawTriangle2(Face3 f){
 
     }
 

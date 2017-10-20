@@ -1,6 +1,6 @@
 package util.exceptions;
 
-import util.math.linearAlgebra.SquareMatrix;
+import core.math.SquareMatrix;
 
 public class MatrixNotSquareException extends MatrixInvalidException{
 
