@@ -38,6 +38,10 @@ public class Vector3f {
         return new Vector3f(scalar*x, scalar*y, scalar*z);
     }
 
+    public Vector3f mul(double scalar){
+        return new Vector3f((float)(scalar*x), (float)(scalar*y), (float)(scalar*z));
+    }
+
     public Vector3f normalise(){
         float len = len();
         x/=len;
@@ -65,5 +69,9 @@ public class Vector3f {
 
     public Vector3f mul(Vector3f vec){
         return new Vector3f(x*vec.x,y*vec.y,z*vec.z);
+    }
+
+    public Vector2f toVector2f(){
+        return new Vector2f(x,y);
     }
 }

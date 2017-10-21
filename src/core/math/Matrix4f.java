@@ -111,10 +111,10 @@ public class Matrix4f extends SquareMatrix {
         return S.mul(R).mul(T);
     }
 
-    public static Matrix4f initScreenFitMatrix(float sx, float sy, float tx, float ty) {
+    public static Matrix4f initRasterMatrix(float sx, float sy) {
         return new Matrix4f(new float[][]{
-                {sx, 0, tx, 0},
-                {0, sy, ty, 0},
+                {sx, 0, sx, 0},
+                {0, sy, sy, 0},
                 {0, 0, 1, 0},
                 {0, 0, 0, 1}
         });

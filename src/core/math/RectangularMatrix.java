@@ -10,13 +10,13 @@ public abstract class RectangularMatrix {
 
     protected int columns, rows;
 
-    public RectangularMatrix(int columns, int rows) {
+    RectangularMatrix(int columns, int rows) {
         mat = initZero(columns, rows);
         this.columns = columns;
         this.rows = rows;
     }
 
-    public RectangularMatrix(float[][] mat) {
+    RectangularMatrix(float[][] mat) {
         rows = mat.length;
         columns = mat[0].length;
         for (int i = 1; i < rows; i++) {
@@ -30,12 +30,12 @@ public abstract class RectangularMatrix {
         this.mat = mat;
     }
 
-    public static float[][] initZero(int columns, int rows) {
+    private static float[][] initZero(int columns, int rows) {
         float[][] mat = new float[columns][rows];
         return mat;
     }
 
-    public static float[][] add(RectangularMatrix a, RectangularMatrix b) throws MatrixMismatchException {
+    static float[][] add(RectangularMatrix a, RectangularMatrix b) throws MatrixMismatchException {
         if (a.columns != b.columns && a.rows != b.rows) {
             throw new MatrixMismatchException(MatrixMismatchException.Function.addition);
         }
@@ -48,9 +48,7 @@ public abstract class RectangularMatrix {
         return newMat;
     }
 
-
-
-    public static float[][] multiply(RectangularMatrix a, RectangularMatrix b) throws MatrixMismatchException {
+    static float[][] multiply(RectangularMatrix a, RectangularMatrix b) throws MatrixMismatchException {
         if (a.columns != b.rows)
             throw new MatrixMismatchException(MatrixMismatchException.Function.multiplication);
 
@@ -67,7 +65,7 @@ public abstract class RectangularMatrix {
         return matrix;
     }
 
-    public static Vector3f multiply( Vector3f v, RectangularMatrix m) throws MatrixMismatchException {
+    static Vector3f multiply( Vector3f v, RectangularMatrix m) throws MatrixMismatchException {
        if(!(m.rows == 1 && m.columns ==3)) throw new MatrixMismatchException(MatrixMismatchException.Function.multiplication);
 
        return new Vector3f(v.x*m.mat[0][0],v.y*m.mat[0][1],v.z*m.mat[0][2]);
@@ -79,6 +77,10 @@ public abstract class RectangularMatrix {
             string += Arrays.toString(aMat) + "\n";
         }
         return string;
+    }
+
+    public void setMat(float[][] mat) {
+        this.mat = mat;
     }
 
     public int getColumns() {

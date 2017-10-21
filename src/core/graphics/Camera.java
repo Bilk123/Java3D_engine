@@ -20,18 +20,15 @@ public class Camera {
         this.scale = scale;
         this.translation = translation;
         this.rotation = rotation;
-        Matrix4f fitToScreenMatrix = Matrix4f.initScreenFitMatrix(Main.WIDTH, Main.HEIGHT, Main.WIDTH, Main.HEIGHT);
-        projection = fitToScreenMatrix.mul(projection);
+        Matrix4f rasterMatrix = Matrix4f.initRasterMatrix(Main.WIDTH, Main.HEIGHT);
+        projection = rasterMatrix.mul(projection);
     }
 
-    public void setRotation(Quaternion4f rotation) {
-        this.rotation = rotation;
-    }
-
-    public void update() {
-        Vector3f fw = rotation.inverse().mul(new Vector3f(0,0,-1)).mul(0.1f);
-        Vector3f up = rotation.inverse().mul(new Vector3f(0,1,0)).mul(0.1f);
-        Vector3f side = rotation.inverse().mul(new Vector3f(1,0,0)).mul(0.1f);
+    public void update(double dt) {
+        double speed = 0.3;
+        Vector3f fw = rotation.inverse().mul(new Vector3f(0,0,-1)).mul(speed*1/dt);
+        Vector3f up = rotation.inverse().mul(new Vector3f(0,1,0)).mul(speed*1/dt);
+        Vector3f side = rotation.inverse().mul(new Vector3f(1,0,0)).mul(speed*1/dt);
         if (Main.getKey().w) {
             translation = translation.add(fw);
         }

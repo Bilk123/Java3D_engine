@@ -11,7 +11,7 @@ import java.awt.image.BufferedImage;
 import java.awt.image.DataBufferInt;
 
 public class Main extends Canvas implements Runnable {
-    public static final int WIDTH = 600;
+    public static final int WIDTH = 800;
     public static final int HEIGHT = (int) (WIDTH * 9.0 / 16.0);
     public static final float SCALE = 2.0f;
     public static final String TITLE = "3D Engine";
@@ -85,22 +85,23 @@ public class Main extends Canvas implements Runnable {
             Time.setDeltaTime(delta / 60.0);
             lastTime = now;
             while (delta >= 1) {
-                update();
-                render();
+                update(delta);
+
                 delta--;
                 updates++;
             }
+            render();
             if (System.currentTimeMillis() - timer > 1000) {
                 timer += 1000;
-                frame.setTitle(TITLE + " | " + updates + " ups, " + updates + " fps");
+                frame.setTitle(TITLE + " | " + updates + " fps");
                 updates = 0;
             }
         }
         stop();
     }
 
-    private void update() {
-        renderer.update();
+    private void update(double dt) {
+        renderer.update(dt);
         key.update();
     }
 
