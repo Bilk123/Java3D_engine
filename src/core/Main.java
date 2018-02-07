@@ -13,7 +13,7 @@ import java.awt.image.DataBufferInt;
 public class Main extends Canvas implements Runnable {
     public static final int WIDTH = 800;
     public static final int HEIGHT = (int) (WIDTH * 9.0 / 16.0);
-    public static final float SCALE = 2.0f;
+    public static final float SCALE = 1.0f;
     public static final String TITLE = "3D Engine";
     public static Graphics2D g2d;
 
@@ -53,7 +53,7 @@ public class Main extends Canvas implements Runnable {
         frame.setVisible(true);
         System.out.println("Window loaded: " + TITLE);
         System.out.println("Buffer size: " + WIDTH + " : " + HEIGHT);
-        System.out.println("graphics.Renderer size: " + getWidth() + " : " + getHeight());
+        System.out.println("Screen size: " + getWidth() + " : " + getHeight());
     }
 
     public synchronized void start() {

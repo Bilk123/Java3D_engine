@@ -1,7 +1,9 @@
 package core.math.geom;
 
+import core.graphics.Texture;
 import core.math.Matrix4f;
 import core.math.Quaternion4f;
+import core.math.Vector2f;
 import core.math.Vector3f;
 
 import java.io.*;
@@ -12,19 +14,18 @@ public class Model {
     private Vector3f vertices[];
     private int[] indices;
     private Matrix4f transform;
+
     public Model(String objName, Vector3f translation, Vector3f scale, Quaternion4f rotation) {
         try(BufferedReader br = new BufferedReader(new FileReader(new File(objName)))) {
             String line = br.readLine();
             ArrayList<Integer> indicesTemp = new ArrayList<>();
             ArrayList<Vector3f> verticesTemp = new ArrayList<>();
             while(line != null){
-                System.out.println(line);
                 String[] elements = line.split(" ");
                 if(elements[0].equals("v")){
                     float x = Float.valueOf(elements[1]);
                     float y = Float.valueOf(elements[2]);
                     float z = Float.valueOf(elements[3]);
-                    System.out.println(x+" : "+ y+" : "+ z);
                     Vector3f v = new Vector3f(x,y,z);
                     verticesTemp.add(v);
 
@@ -59,4 +60,5 @@ public class Model {
     public int[] getIndices() {
         return indices;
     }
+
 }

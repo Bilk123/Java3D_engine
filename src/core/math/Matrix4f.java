@@ -41,6 +41,15 @@ public class Matrix4f extends SquareMatrix {
         return new Vector3f(a / w, b / w, c / w);
     }
 
+    public Vector4f mul(Vector4f vec) {
+        float a, b, c, w;
+        a = vec.x * mat[0][0] + vec.y * mat[0][1] + vec.z * mat[0][2] + vec.w*mat[0][3];
+        b = vec.x * mat[1][0] + vec.y * mat[1][1] + vec.z * mat[1][2] + vec.w*mat[1][3];
+        c = vec.x * mat[2][0] + vec.y * mat[2][1] + vec.z * mat[2][2] + vec.w*mat[2][3];
+        w = vec.x * mat[3][0] + vec.y * mat[3][1] + vec.z * mat[3][2] + vec.w*mat[3][3];
+        return new Vector4f(a,b,c,w);
+    }
+
     public Vector3f clipMul(Vector3f vec) {
         float a, b, c, w, z;
         z = vec.z < 0 ? 0 : vec.z;
@@ -48,6 +57,7 @@ public class Matrix4f extends SquareMatrix {
         b = vec.x * mat[1][0] + vec.y * mat[1][1] + z * mat[1][2] + mat[1][3];
         c = vec.x * mat[2][0] + vec.y * mat[2][1] + z * mat[2][2] + mat[2][3];
         w = vec.x * mat[3][0] + vec.y * mat[3][1] + z * mat[3][2] + mat[3][3];
+
         return new Vector3f(a / w, b / w, c / w);
     }
 
@@ -76,7 +86,7 @@ public class Matrix4f extends SquareMatrix {
         return new Matrix4f(new float[][]
                 {
                         {2 * n / (r - l), 0, 0, 0},
-                        {0, -2 * n / (t - b), 0, 0},
+                        {0, 2 * n / (t - b), 0, 0},
                         {(r + l) / (r - l), (t + b) / (t - b), -(f + n) / (f - n),-1},
                         {0, 0, -2 * f * n / (f - n), 0}
                 });
@@ -111,10 +121,10 @@ public class Matrix4f extends SquareMatrix {
         return S.mul(R).mul(T);
     }
 
-    public static Matrix4f initRasterMatrix(float sx, float sy) {
+    public static Matrix4f initRasterMatrix(float sx, float sy, float tx, float ty) {
         return new Matrix4f(new float[][]{
-                {sx, 0, sx, 0},
-                {0, sy, sy, 0},
+                {sx, 0, tx, 0},
+                {0, sy, ty, 0},
                 {0, 0, 1, 0},
                 {0, 0, 0, 1}
         });
